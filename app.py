@@ -246,8 +246,8 @@ with tabs[2]:
         gender_options = ["Both"] + sorted(data['Gender_str'].unique().tolist())
         scholarship_options = ["Both"] + sorted(data['Scholarship_str'].unique().tolist())
         debtor_options = ["Both"] + sorted(data['Debtor_str'].unique().tolist())
-        actual_status_options = ["Both"] + sorted(data['Status'].unique().tolist())
-        predicted_status_options = ["Both"] + sorted(data['Predicted_Status'].unique().tolist())
+        actual_status_options = ["All"] + sorted(data['Status'].unique().tolist())
+        predicted_status_options = ["All"] + sorted(data['Predicted_Status'].unique().tolist())
 
         gender_filter = st.selectbox("Gender", options=gender_options)
         scholarship_filter = st.selectbox("Scholarship Holder", options=scholarship_options)
@@ -262,9 +262,9 @@ with tabs[2]:
         filtered_data = filtered_data[filtered_data['Scholarship_str'] == scholarship_filter]
     if debtor_filter != "Both":
         filtered_data = filtered_data[filtered_data['Debtor_str'] == debtor_filter]
-    if actual_status_filter != "Both":
+    if actual_status_filter != "All":
         filtered_data = filtered_data[filtered_data['Status'] == actual_status_filter]
-    if predicted_status_filter != "Both":
+    if predicted_status_filter != "All":
         filtered_data = filtered_data[filtered_data['Predicted_Status'] == predicted_status_filter]
 
     # Display full table
