@@ -1,3 +1,5 @@
+.gitignore
+
 #Ignore Virtual Env
 .venv/
 
