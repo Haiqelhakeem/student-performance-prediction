@@ -1,36 +1,35 @@
-# Proyek Akhir: Sistem Prediksi Dropout Mahasiswa
+# Proyek Akhir: Sistem Prediksi Dropout siswa
 
 ## Business Understanding
 
-**Jaya Jaya Institut** menghadapi tantangan besar dalam mempertahankan tingkat kelulusan mahasiswa. Dropout mahasiswa dapat berdampak negatif pada kinerja institusi, kualitas lulusan, serta stabilitas keuangan kampus. Oleh karena itu, dibutuhkan sistem prediksi dropout yang mampu membantu tim akademik untuk:
+Jaya Jaya Institut menghadapi tantangan besar dalam mempertahankan tingkat kelulusan siswa. Dropout siswa dapat berdampak negatif pada kinerja institusi, kualitas lulusan, serta stabilitas keuangan kampus. Oleh karena itu, dibutuhkan sistem prediksi dropout yang mampu membantu tim akademik untuk:
 
-* Mengidentifikasi mahasiswa yang berpotensi dropout secara dini.
+* Mengidentifikasi siswa yang berpotensi dropout secara dini.
 * Memberikan rekomendasi tindakan intervensi yang tepat sasaran.
 * Mengoptimalkan sumber daya akademik dan finansial.
 
 ### Permasalahan Bisnis
 
-* Tingginya tingkat dropout mahasiswa yang berdampak pada citra institusi.
-* Tidak adanya sistem monitoring yang proaktif untuk mendeteksi mahasiswa berisiko dropout.
+* Tingginya tingkat dropout siswa yang berdampak pada citra institusi.
+* Tidak adanya sistem monitoring yang proaktif untuk mendeteksi siswa berisiko dropout.
 * Sulitnya pengambilan keputusan berbasis data dalam proses intervensi akademik.
 
 ### Cakupan Proyek
 
 * Melakukan eksplorasi data (EDA) secara komprehensif.
-* Membangun model prediksi klasifikasi status mahasiswa menggunakan Random Forest dan XGBoost.
+* Membangun model prediksi klasifikasi status siswa menggunakan Random Forest dan XGBoost.
 * Mengembangkan dashboard interaktif berbasis Streamlit.
 * Menyediakan sistem rekomendasi action items berbasis hasil prediksi.
 
 ### Persiapan
 
-**Sumber data:** `data.csv` (berisi data akademik, demografi, keuangan, dan histori perkuliahan mahasiswa).
+**Sumber data:** `data.csv` (berisi data akademik, demografi, keuangan, dan histori perkuliahan siswa).
 
 **Setup environment:**
 
-```
-# Clone repository (opsional)
-git clone <repository-url>
-cd project-folder
+```bash
+# Clone repository
+git clone https://github.com/Haiqelhakeem/student-performance-prediction.git
 
 # Membuat virtual environment
 python -m venv .venv
@@ -54,25 +53,55 @@ streamlit run app.py
 
 ## Business Dashboard
 
-Dashboard interaktif dibangun menggunakan **Streamlit** yang terdiri dari:
+Dashboard interaktif dibangun menggunakan **Streamlit** yang berfungsi sebagai *Decision Support System* berbasis Machine Learning untuk membantu manajemen kampus memonitor potensi dropout mahasiswa secara proaktif. Dashboard terdiri dari 3 fitur utama berikut:
 
-1️⃣ **📊 Data Visualization**
+---
 
-* Visualisasi korelasi antar fitur.
-* Deteksi outlier menggunakan IQR.
-* Distribusi fitur penting (Admission Grade, Age at Enrollment, Gender, Course).
+### 1️⃣ 📊 Data Visualization (Eksplorasi Data)
 
-2️⃣ **🎯 Prediction**
+- Menampilkan **preview dataset** lengkap dengan `dataframe head()`.
+- Visualisasi **distribusi kelas target** (Graduate, Enrolled, Dropout).
+- **Correlation Heatmap** yang berfokus pada fitur-fitur yang paling berpengaruh terhadap dropout.
+- Deteksi **outlier** menggunakan metode Interquartile Range (IQR) pada fitur-fitur yang paling berkorelasi.
+- Visualisasi distribusi dari fitur-fitur kunci, antara lain:
+  - `Admission Grade` (Nilai masuk mahasiswa)
+  - `Age at Enrollment` (Usia saat masuk kuliah)
+  - `Gender` (Jenis kelamin)
+  - `Course` (Jurusan)
+- Visualisasi **sebaran dropout berdasarkan gender dan jurusan** untuk membantu identifikasi kelompok risiko.
 
-* Form input interaktif untuk memasukkan data mahasiswa.
-* Pilihan model: Random Forest atau XGBoost.
-* Output prediksi status (Graduate, Enrolled, Dropout), confidence score, dan rekomendasi tindakan.
+---
 
-3️⃣ **📋 Recommendations**
+### 2️⃣ 🎯 Prediction (Prediksi Dropout Siswa)
 
-* Hasil prediksi keseluruhan dataset.
-* Filter multi-kriteria: Gender, Scholarship, Debtor, Actual Status, Predicted Status.
-* Dynamic Recommended Actions berbasis prediksi dan status aktual.
+- Form input interaktif bagi user untuk melakukan simulasi prediksi status mahasiswa secara individual.
+- User dapat memilih model yang digunakan:  
+  - `Random Forest Classifier` atau `XGBoost Classifier`.
+- Sistem memproses data input melalui preprocessing dan encoding otomatis.
+- Output yang dihasilkan:
+  - Prediksi status (`Graduate`, `Enrolled`, `Dropout`).
+  - Skor confidence prediksi dalam persentase.
+  - Rekomendasi tindakan intervensi berbasis hasil prediksi.
+- Cocok digunakan oleh tim akademik untuk mengevaluasi kondisi individu mahasiswa secara real-time.
+
+---
+
+### 3️⃣ 📋 Recommendations (Actionable Intervention Recommendations)
+
+- Sistem melakukan inferensi otomatis pada seluruh dataset secara batch.
+- Terdapat fitur **multi-filter interaktif** untuk eksplorasi hasil prediksi:
+  - `Gender`, `Scholarship Holder`, `Debtor`, `Actual Status`, dan `Predicted Status`.
+- Setiap baris data mahasiswa yang diprediksi diberikan **Recommended Action** secara otomatis berdasarkan kombinasi status aktual dan hasil prediksi:
+  - 🧑‍🏫 `Academic Mentoring`
+  - 🧠 `Counseling Support`
+  - 💰 `Financial Aid Review`
+  - 📞 `Alumni Follow-up`
+  - ✅ `Continuous Monitoring`
+- Fitur ini memungkinkan tim manajemen kampus melakukan pengambilan keputusan berbasis data secara cepat dan presisi.
+
+**🔗 Link Akses Dashboard Streamlit:**
+
+👉 [Student Performance Prediction Dashboard](https://student-performance-pred-haiqelhakeem.streamlit.app/)
 
 ---
 
@@ -87,7 +116,7 @@ Model machine learning yang digunakan telah dilatih dengan algoritma:
 
 Untuk menjalankan prototipe sistem prediksi:
 
-```
+```bash
 streamlit run app.py
 ```
 
@@ -95,18 +124,57 @@ streamlit run app.py
 
 ## Conclusion
 
-Dengan diterapkannya sistem prediksi dropout berbasis machine learning, Jaya Jaya Institut kini memiliki:
+Dengan diterapkannya sistem **Prediksi Dropout Mahasiswa berbasis Machine Learning**, Jaya Jaya Institut kini memiliki infrastruktur *Data-Driven Decision Support System* yang memberikan manfaat nyata bagi manajemen kampus, antara lain:
 
-* Sistem monitoring dini mahasiswa berisiko tinggi.
-* Rekomendasi intervensi berbasis data.
-* Alat bantu pengambilan keputusan manajemen akademik.
-* Potensi peningkatan retensi dan kesuksesan studi mahasiswa.
+- 📊 **Sistem Monitoring Proaktif**  
+  Kemampuan untuk mendeteksi mahasiswa yang menunjukkan potensi dropout sejak dini, sebelum masalah berkembang lebih jauh.
+
+- 🎯 **Sistem Rekomendasi Intervensi Otomatis**  
+  Memberikan saran tindakan intervensi yang terpersonalisasi berdasarkan kombinasi hasil prediksi dan status aktual mahasiswa.
+
+- 📋 **Pendukung Pengambilan Keputusan Manajemen Akademik**  
+  Memberikan gambaran menyeluruh berbasis data untuk rapat manajemen, penentuan kebijakan akademik, serta pengalokasian sumber daya.
+
+- 📈 **Potensi Peningkatan Retensi Mahasiswa**  
+  Dengan intervensi dini, diharapkan tingkat kelulusan meningkat, menekan jumlah dropout, serta menjaga kualitas lulusan dan reputasi institusi.
+
+- 🔄 **Sistem Berkelanjutan yang Dapat Dilatih Ulang**  
+  Model dapat diretrain secara berkala seiring penambahan data baru sehingga menjaga akurasi prediksi tetap relevan dengan dinamika mahasiswa.
+
+---
 
 ### Rekomendasi Action Items
 
-* Melakukan monitoring berkala terhadap mahasiswa dengan prediksi dropout saat masih berstatus enrolled.
-* Memberikan mentoring akademik secara personal bagi mahasiswa berisiko.
-* Meninjau kembali skema bantuan keuangan (financial aid) bagi mahasiswa yang menjadi debtor.
-* Menyediakan layanan konseling psikologis untuk mahasiswa dengan tingkat stress akademik tinggi.
-* Mengembangkan program re-entry dan alumni tracking untuk mahasiswa yang sudah dropout.
-* Melakukan retraining model secara berkala dengan data terbaru agar akurasi prediksi tetap optimal.
+Berikut beberapa rekomendasi langkah taktis yang dapat dilakukan oleh institusi berdasarkan hasil sistem ini:
+
+#### 1. Intervensi Dini Terhadap Mahasiswa Enrolled dengan Prediksi Dropout
+
+- Melakukan review akademik secara rutin.
+- Melibatkan wali akademik untuk monitoring progres semester.
+- Menyusun program pembinaan belajar atau kelas remedial.
+
+#### 2. Peningkatan Dukungan Finansial (Debtor & Tuition Fees)
+
+- Menyusun skema bantuan keuangan yang lebih fleksibel.
+- Memberikan opsi penjadwalan ulang pembayaran biaya kuliah.
+
+#### 3. Penguatan Layanan Konseling dan Psikologis
+
+- Menyediakan sesi konseling akademik maupun non-akademik.
+- Mengedukasi mahasiswa tentang manajemen stres dan keseimbangan belajar.
+
+#### 4. Pengembangan Program Re-entry dan Alumni
+
+- Membuka peluang re-registrasi bagi mahasiswa dropout.
+- Melakukan tracking alumni untuk evaluasi efektivitas program pembinaan.
+
+#### 5. Penguatan Sistem Monitoring Berkelanjutan
+
+- Memastikan tim manajemen secara aktif menggunakan dashboard prediksi sebagai tools operasional.
+- Memanfaatkan fitur multi-filter pada dashboard untuk analisis populasi risiko spesifik (misal: per jurusan, gender, beasiswa, dll).
+
+#### 6. Pengembangan Model Secara Berkelanjutan
+
+- Mengupdate dataset setiap semester.
+- Melakukan retraining model minimal 1 kali per tahun agar akurasi sistem terjaga mengikuti dinamika data terbaru.
+
