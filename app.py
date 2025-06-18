@@ -90,7 +90,7 @@ with tabs[0]:
     st.subheader("Correlation Heatmap (Top Features Only)")
     data['Status_encoded'] = label_encoder.transform(data['Status'])
     corr = data[top_features + ['Status_encoded']].corr()
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(8, 6))
     sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
     st.pyplot(fig)
 
@@ -120,7 +120,7 @@ with tabs[0]:
     st.pyplot(fig)
 
     st.subheader("Feature Distributions")
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(8, 6))
     sns.histplot(df['Admission_grade'], kde=True, ax=axes[0])
     axes[0].set_title("Admission Grade")
     sns.histplot(df['Age_at_enrollment'], kde=True, ax=axes[1])
@@ -128,18 +128,18 @@ with tabs[0]:
     st.pyplot(fig)
 
     st.subheader("Dropout by Gender")
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
     sns.countplot(data=df, x='Gender', hue='Status', ax=ax)
     st.pyplot(fig)
 
     st.subheader("Dropout by Course")
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
     sns.countplot(data=df, x='Course', hue='Status', ax=ax)
     plt.xticks(rotation=90)
     st.pyplot(fig)
 
     st.subheader("Target Class Distribution")
-    fig, ax = plt.subplots(figsize=(6, 4))
+    fig, ax = plt.subplots(figsize=(8, 6))
     sns.countplot(x=df['Status'], ax=ax)
     st.pyplot(fig)
 
