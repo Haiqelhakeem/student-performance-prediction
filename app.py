@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 ### Streamlit App
 st.set_page_config(layout="wide", page_title="Student Dropout Prediction - Jaya Jaya Institut")
-st.title("👨‍🎓 Student Dropout Prediction - Jaya Jaya Institut")
+st.title("Student Dropout Prediction - Jaya Jaya Institut")
 
 # Optimized caching for model loading
 @st.cache_resource
@@ -26,6 +26,9 @@ def load_data():
 
 data = load_data()
 df = data.copy()
+
+# Apply scaling only for visualization
+df['Admission_grade_scaled'] = df['Admission_grade'] / 10
 
 # Top features
 top_features = [
@@ -57,7 +60,6 @@ application_mode_mapping = {
     "Change of institution/course (International)": 57
 }
 
-# Caching correlation computation
 @st.cache_data
 def compute_corr(df, label_encoder):
     df = df.copy()
@@ -76,75 +78,130 @@ def detect_outliers_iqr(data, column):
 
 # Sidebar
 model_choice = st.sidebar.radio("Choose Model", ["Random Forest", "XGBoost"])
-tabs = st.tabs(["📊 Data Visualization", "🎯 Prediction", "📋 Recommendations"])
+tabs = st.tabs(["Data Visualization", "Prediction", "Recommendations"])
 
 # --- Data Visualization Tab ---
 with tabs[0]:
-    st.header("📊 Data Visualization")
-    st.subheader("Raw Data Preview")
-    st.dataframe(df.head())
+    st.header("Data Visualization")
 
-    st.subheader("Class Distribution")
-    st.bar_chart(df['Status'].value_counts())
+    viz_tabs = st.tabs(["Overview", "Demographics", "Financial Factors", "Academic Factors"])
 
-    st.subheader("Correlation Heatmap (Top Features Only)")
-    data['Status_encoded'] = label_encoder.transform(data['Status'])
-    corr = data[top_features + ['Status_encoded']].corr()
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
-    st.pyplot(fig)
+    with viz_tabs[0]:
+        st.subheader("Raw Data Preview")
+        st.dataframe(df.head())
 
-    st.subheader("Top 10 Correlated Features with Status")
-    target_corr = corr['Status_encoded'].sort_values(key=abs, ascending=False)
-    most_corr_features = target_corr.index[1:11]
-    st.write(most_corr_features)
+        st.subheader("Class Distribution")
+        st.bar_chart(df['Status'].value_counts())
 
-    for col in most_corr_features:
-        st.write(f"Boxplot for {col}")
-        fig, ax = plt.subplots()
-        sns.boxplot(x=df[col], ax=ax)
+        with st.expander("Correlation Heatmap (Top Features Only)"):
+            data['Status_encoded'] = label_encoder.transform(data['Status'])
+            corr = data[top_features + ['Status_encoded']].corr()
+            fig, ax = plt.subplots(figsize=(10, 8))
+            sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
+            st.pyplot(fig)
+
+        with st.expander("Top 10 Correlated Features"):
+            top_corr = corr['Status_encoded'].abs().sort_values(ascending=False)[1:11]
+            fig, ax = plt.subplots(figsize=(10, 8))
+            sns.barplot(x=top_corr.values, y=top_corr.index, palette="magma", ax=ax)
+            plt.xlabel("Correlation with Dropout")
+            st.pyplot(fig)
+
+    with viz_tabs[1]:
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.subheader("Dropout by Gender")
+            df['Gender_str'] = df['Gender'].map({0: 'Female', 1: 'Male'})
+            fig, ax = plt.subplots(figsize=(4, 3))
+            sns.countplot(data=df, x='Gender_str', hue='Status', ax=ax)
+            st.pyplot(fig)
+            for status in df['Status'].unique():
+                count_male = len(df[(df['Gender'] == 1) & (df['Status'] == status)])
+                count_female = len(df[(df['Gender'] == 0) & (df['Status'] == status)])
+                st.write(f"{status} - Male: {count_male}, Female: {count_female}")
+
+        with col2:
+            st.subheader("Dropout by Age Group")
+            df['Age_Group'] = pd.cut(df['Age_at_enrollment'], bins=[15,20,25,30,35,40,100],
+                                     labels=["<20", "20-24", "25-29", "30-34", "35-39", "40+"])
+            fig, ax = plt.subplots(figsize=(4, 3))
+            sns.countplot(data=df, x='Age_Group', hue='Status', ax=ax)
+            st.pyplot(fig)
+            for status in df['Status'].unique():
+                for group in df['Age_Group'].unique():
+                    count = len(df[(df['Age_Group'] == group) & (df['Status'] == status)])
+                    st.write(f"{status} - {group}: {count}")
+
+    with viz_tabs[2]:
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.subheader("Dropout by Scholarship Holder")
+            df['Scholarship_str'] = df['Scholarship_holder'].map({0: 'No', 1: 'Yes'})
+            fig, ax = plt.subplots(figsize=(4, 3))
+            sns.countplot(data=df, x='Scholarship_str', hue='Status', ax=ax)
+            st.pyplot(fig)
+            for status in df['Status'].unique():
+                for cat in ['No', 'Yes']:
+                    count = len(df[(df['Scholarship_str'] == cat) & (df['Status'] == status)])
+                    st.write(f"{status} - Scholarship {cat}: {count}")
+
+        with col2:
+            st.subheader("Dropout by Debtor")
+            df['Debtor_str'] = df['Debtor'].map({0: 'No', 1: 'Yes'})
+            fig, ax = plt.subplots(figsize=(4, 3))
+            sns.countplot(data=df, x='Debtor_str', hue='Status', ax=ax)
+            st.pyplot(fig)
+            for status in df['Status'].unique():
+                for cat in ['No', 'Yes']:
+                    count = len(df[(df['Debtor_str'] == cat) & (df['Status'] == status)])
+                    st.write(f"{status} - Debtor {cat}: {count}")
+
+        st.subheader("Dropout by Tuition Fees Payment Status")
+        df['Tuition_str'] = df['Tuition_fees_up_to_date'].map({0: 'No', 1: 'Yes'})
+        fig, ax = plt.subplots(figsize=(5, 3))
+        sns.countplot(data=df, x='Tuition_str', hue='Status', ax=ax)
         st.pyplot(fig)
-        outliers = detect_outliers_iqr(df, col)
-        st.write(f"{len(outliers)} outliers detected in {col}")
+        for status in df['Status'].unique():
+            for cat in ['No', 'Yes']:
+                count = len(df[(df['Tuition_str'] == cat) & (df['Status'] == status)])
+                st.write(f"{status} - Tuition Up To Date {cat}: {count}")
 
-    st.subheader("Admission Grade Outlier Boxplot")
-    fig, ax = plt.subplots(figsize=(8, 5))
-    sns.boxplot(x=df['Admission_grade'], ax=ax)
-    st.pyplot(fig)
+    with viz_tabs[3]:
+        st.subheader("Feature Distributions")
+        col1, col2 = st.columns(2)
 
-    st.subheader("Top 10 Correlated Features")
-    top_corr = corr['Status_encoded'].abs().sort_values(ascending=False)[1:11]
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.barplot(x=top_corr.values, y=top_corr.index, palette="magma", ax=ax)
-    plt.xlabel("Correlation with Dropout")
-    st.pyplot(fig)
+        with col1:
+            fig, ax = plt.subplots(figsize=(4, 3))
+            sns.histplot(df['Admission_grade_scaled'], kde=True, ax=ax)
+            ax.set_title("Admission Grade")
+            st.pyplot(fig)
+            st.write(f"Mean: {df['Admission_grade_scaled'].mean():.2f}")
+            st.write(f"Median: {df['Admission_grade_scaled'].median():.2f}")
+            st.write(f"Min: {df['Admission_grade_scaled'].min():.2f}")
+            st.write(f"Max: {df['Admission_grade_scaled'].max():.2f}")
 
-    st.subheader("Feature Distributions")
-    fig, axes = plt.subplots(1, 2, figsize=(8, 6))
-    sns.histplot(df['Admission_grade'], kde=True, ax=axes[0])
-    axes[0].set_title("Admission Grade")
-    sns.histplot(df['Age_at_enrollment'], kde=True, ax=axes[1])
-    axes[1].set_title("Age at Enrollment")
-    st.pyplot(fig)
+        with col2:
+            fig, ax = plt.subplots(figsize=(4, 3))
+            sns.histplot(df['Age_at_enrollment'], kde=True, ax=ax)
+            ax.set_title("Age at Enrollment")
+            st.pyplot(fig)
+            st.write(f"Mean: {df['Age_at_enrollment'].mean():.2f}")
+            st.write(f"Median: {df['Age_at_enrollment'].median():.2f}")
+            st.write(f"Min: {df['Age_at_enrollment'].min():.0f}")
+            st.write(f"Max: {df['Age_at_enrollment'].max():.0f}")
 
-    st.subheader("Dropout by Gender")
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.countplot(data=df, x='Gender', hue='Status', ax=ax)
-    st.pyplot(fig)
+        with st.expander("Detailed Boxplots of Top Correlated Features"):
+            most_corr_features = corr['Status_encoded'].sort_values(key=abs, ascending=False).index[1:11]
+            for col in most_corr_features:
+                st.write(f"Boxplot for {col}")
+                fig, ax = plt.subplots(figsize=(5, 3))
+                sns.boxplot(x=df[col], ax=ax)
+                st.pyplot(fig)
+                outliers = detect_outliers_iqr(df, col)
+                st.write(f"Total Outliers in {col}: {len(outliers)}")
 
-    st.subheader("Dropout by Course")
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.countplot(data=df, x='Course', hue='Status', ax=ax)
-    plt.xticks(rotation=90)
-    st.pyplot(fig)
-
-    st.subheader("Target Class Distribution")
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.countplot(x=df['Status'], ax=ax)
-    st.pyplot(fig)
-
-    st.write("Class Balance:")
-    st.write(df['Status'].value_counts(normalize=True))
 
 # --- Prediction Tab ---
 with tabs[1]:
