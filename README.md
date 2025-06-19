@@ -23,7 +23,7 @@ Jaya Jaya Institut menghadapi tantangan besar dalam mempertahankan tingkat kelul
 
 ### Persiapan
 
-**Sumber data:** `data.csv` (berisi data akademik, demografi, keuangan, dan histori perkuliahan siswa).
+**Sumber data:** [Link Dataset](https://github.com/dicodingacademy/dicoding_dataset/blob/main/students_performance/data.csv)
 
 **Setup environment:**
 
@@ -126,20 +126,47 @@ streamlit run app.py
 
 Dengan diterapkannya sistem **Prediksi Dropout Mahasiswa berbasis Machine Learning**, Jaya Jaya Institut kini memiliki infrastruktur *Data-Driven Decision Support System* yang memberikan manfaat nyata bagi manajemen kampus, antara lain:
 
-- 📊 **Sistem Monitoring Proaktif**  
-  Kemampuan untuk mendeteksi mahasiswa yang menunjukkan potensi dropout sejak dini, sebelum masalah berkembang lebih jauh.
+- 🧠 Faktor Utama Dropout:
+  - Prestasi akademik semester 1 & 2 (grade & approved units)
+  - Status keuangan: Debtor & Tuition Fees Up To Date
+  - Tidak menerima beasiswa
+  - Demografi: Laki-laki, Usia Muda
 
-- 🎯 **Sistem Rekomendasi Intervensi Otomatis**  
-  Memberikan saran tindakan intervensi yang terpersonalisasi berdasarkan kombinasi hasil prediksi dan status aktual mahasiswa.
+- 🧑‍🏫 Karakteristik Mahasiswa Dropout:
+  - Nilai akademik rendah sejak awal
+  - Jumlah mata kuliah lulus sedikit
+  - Memiliki tunggakan pembayaran
+  - Bukan penerima beasiswa
+  - Usia muda dan cenderung laki-laki
 
-- 📋 **Pendukung Pengambilan Keputusan Manajemen Akademik**  
-  Memberikan gambaran menyeluruh berbasis data untuk rapat manajemen, penentuan kebijakan akademik, serta pengalokasian sumber daya.
+- ✅ Solusi Paling Efektif:
 
-- 📈 **Potensi Peningkatan Retensi Mahasiswa**  
-  Dengan intervensi dini, diharapkan tingkat kelulusan meningkat, menekan jumlah dropout, serta menjaga kualitas lulusan dan reputasi institusi.
-
-- 🔄 **Sistem Berkelanjutan yang Dapat Dilatih Ulang**  
-  Model dapat diretrain secara berkala seiring penambahan data baru sehingga menjaga akurasi prediksi tetap relevan dengan dinamika mahasiswa.
+  - 🧠 **Academic Early Intervention Program**  
+    Deteksi dini mahasiswa dengan nilai rendah semester 1 & 2
+    
+  - 💰 **Financial Aid Prioritization**
+    Beasiswa atau penjadwalan ulang pembayaran untuk mahasiswa berprestasi namun memiliki kendala finansial
+    
+  - 🧠 **Counseling & Academic Mentorship**
+    Mentoring khusus untuk mahasiswa di bawah standar akademik
+    
+  - 💰 **Integrated Financial Monitoring System**  
+    Integrasi data pembayaran dengan sistem monitoring akademik
+  
+  - 📊 **Sistem Monitoring Proaktif**  
+    Kemampuan untuk mendeteksi mahasiswa yang menunjukkan potensi dropout sejak dini, sebelum masalah berkembang lebih jauh.
+  
+  - 🎯 **Sistem Rekomendasi Intervensi Otomatis**  
+    Memberikan saran tindakan intervensi yang terpersonalisasi berdasarkan kombinasi hasil prediksi dan status aktual mahasiswa.
+  
+  - 📋 **Pendukung Pengambilan Keputusan Manajemen Akademik**  
+    Memberikan gambaran menyeluruh berbasis data untuk rapat manajemen, penentuan kebijakan akademik, serta pengalokasian sumber daya.
+  
+  - 📈 **Potensi Peningkatan Retensi Mahasiswa**  
+    Dengan intervensi dini, diharapkan tingkat kelulusan meningkat, menekan jumlah dropout, serta menjaga kualitas lulusan dan reputasi institusi.
+  
+  - 🔄 **Sistem Berkelanjutan yang Dapat Dilatih Ulang**  
+    Model dapat diretrain secara berkala seiring penambahan data baru sehingga menjaga akurasi prediksi tetap relevan dengan dinamika mahasiswa.
 
 ---
 
